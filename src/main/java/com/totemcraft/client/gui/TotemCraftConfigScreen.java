@@ -39,15 +39,24 @@ public class TotemCraftConfigScreen extends Screen {
     private final List<ModTab> modTabs = new ArrayList<>();
     private int selectedTabIdx = 0;
     private int tabScrollOffset = 0;
-    private static final int VISIBLE_TABS = 4;
+    private int visibleTabs = 4;
 
-    // Item picker catalog
+    // Dynamic Item picker catalog
     private final List<Item> allItems = new ArrayList<>();
     private final List<Item> filteredItems = new ArrayList<>();
     private int catalogPage = 0;
-    private static final int CATALOG_COLS = 10;
-    private static final int CATALOG_ROWS = 5;
-    private static final int ITEMS_PER_PAGE = CATALOG_COLS * CATALOG_ROWS; // 50 items per page
+    private int catalogCols = 10;
+    private int catalogRows = 5;
+    private int itemsPerPage = 50;
+
+    // Layout coordinates (calculated dynamically in init)
+    private int leftPaneX;
+    private int rightPaneX;
+    private int contentY;
+    private int catalogGridY;
+    private int searchWidth;
+    private static final int SLOT_SIZE = 24;
+    private static final int LEFT_PANE_WIDTH = 186;
 
     private TextFieldWidget searchField;
     private ButtonWidget prevPageBtn;
@@ -92,8 +101,7 @@ public class TotemCraftConfigScreen extends Screen {
         if (container.isPresent()) {
             return container.get().getMetadata().getName();
         }
-        // Capitalize first letter of namespace
-        if (namespace.length() > 0) {
+        if (!namespace.isEmpty()) {
             return Character.toUpperCase(namespace.charAt(0)) + namespace.substring(1);
         }
         return namespace;
@@ -134,18 +142,38 @@ public class TotemCraftConfigScreen extends Screen {
     @Override
     protected void init() {
         int centerX = this.width / 2;
-        int topY = 24;
+        int topY = 22;
 
         // Top toggle button: Recipe Enabled / Disabled
         updateToggleBtn(centerX - 80, topY);
 
-        // Content starts comfortably below top panel
-        int contentY = topY + 30; // y = 54
-        int leftPaneX = centerX - 225;
-        int rightPaneX = centerX - 30;
+        // Content starts below top panel
+        contentY = topY + 28; // ~50
+        int bottomY = this.height - 26;
+
+        // Dynamic Calculation of Catalog Dimensions based on screen size
+        int availableTotalWidth = Math.max(300, this.width - 24);
+        int availableRightWidth = Math.max(120, availableTotalWidth - LEFT_PANE_WIDTH - 16);
+        catalogCols = Math.max(4, availableRightWidth / SLOT_SIZE);
+
+        int actualCatalogWidth = catalogCols * SLOT_SIZE;
+        searchWidth = actualCatalogWidth - 2;
+
+        int totalContentWidth = LEFT_PANE_WIDTH + 16 + actualCatalogWidth;
+        leftPaneX = Math.max(8, (this.width - totalContentWidth) / 2);
+        rightPaneX = leftPaneX + LEFT_PANE_WIDTH + 16;
+
+        // Dynamic Rows Calculation
+        int searchY = contentY + 20;
+        catalogGridY = searchY + 22;
+        int availableCatalogHeight = Math.max(SLOT_SIZE * 3, (bottomY - 26) - catalogGridY);
+        catalogRows = Math.max(3, availableCatalogHeight / SLOT_SIZE);
+        itemsPerPage = catalogCols * catalogRows;
+
+        // Dynamic Tabs Visibility
+        visibleTabs = Math.max(2, (searchWidth - 44) / 58);
 
         // --- LEFT PANE (Crafting Grid & Actions) ---
-        // Action Buttons under crafting grid
         int actionBtnY = contentY + 104;
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("totemcraft.gui.clear_slot"), btn -> clearSelectedSlot())
                 .dimensions(leftPaneX, actionBtnY, 88, 18)
@@ -167,41 +195,39 @@ public class TotemCraftConfigScreen extends Screen {
                 .dimensions(resultX + 19, resultY + 32, 18, 18)
                 .build());
 
-        // --- RIGHT PANE (Mod Tabs, Search, Large Catalog) ---
-        // Mod Tabs row
+        // --- RIGHT PANE (Mod Tabs, Search, Dynamic Catalog) ---
         int tabY = contentY;
         prevTabBtn = ButtonWidget.builder(Text.literal("◀"), btn -> scrollTabs(-1))
                 .dimensions(rightPaneX, tabY, 18, 16)
                 .build();
         nextTabBtn = ButtonWidget.builder(Text.literal("▶"), btn -> scrollTabs(1))
-                .dimensions(rightPaneX + 236, tabY, 18, 16)
+                .dimensions(rightPaneX + searchWidth - 18, tabY, 18, 16)
                 .build();
         this.addDrawableChild(prevTabBtn);
         this.addDrawableChild(nextTabBtn);
         rebuildTabButtons(rightPaneX + 22, tabY);
 
         // Search Field
-        int searchY = tabY + 20;
-        searchField = new TextFieldWidget(this.textRenderer, rightPaneX, searchY, 254, 18, Text.literal("Search"));
+        String previousSearch = searchField != null ? searchField.getText() : "";
+        searchField = new TextFieldWidget(this.textRenderer, rightPaneX, searchY, searchWidth, 18, Text.literal("Search"));
+        searchField.setText(previousSearch);
         searchField.setPlaceholder(Text.translatable("totemcraft.gui.search_placeholder").formatted(Formatting.GRAY));
         searchField.setChangedListener(query -> refreshFilteredItems());
         this.addDrawableChild(searchField);
 
         // Catalog Pagination Buttons
-        int catalogGridY = searchY + 22;
-        int pageBtnY = catalogGridY + (CATALOG_ROWS * 24) + 6;
+        int pageBtnY = catalogGridY + (catalogRows * SLOT_SIZE) + 6;
         prevPageBtn = ButtonWidget.builder(Text.literal("◀"), btn -> changePage(-1))
                 .dimensions(rightPaneX, pageBtnY, 24, 18)
                 .build();
         nextPageBtn = ButtonWidget.builder(Text.literal("▶"), btn -> changePage(1))
-                .dimensions(rightPaneX + 230, pageBtnY, 24, 18)
+                .dimensions(rightPaneX + searchWidth - 24, pageBtnY, 24, 18)
                 .build();
         this.addDrawableChild(prevPageBtn);
         this.addDrawableChild(nextPageBtn);
         updatePaginationButtons();
 
         // --- BOTTOM PANE (Controls) ---
-        int bottomY = this.height - 26;
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("totemcraft.gui.reset_defaults"), btn -> resetDefaults())
                 .dimensions(centerX - 190, bottomY, 115, 20)
                 .build());
@@ -214,11 +240,8 @@ public class TotemCraftConfigScreen extends Screen {
     }
 
     private void scrollTabs(int delta) {
-        int maxOffset = Math.max(0, modTabs.size() - VISIBLE_TABS);
+        int maxOffset = Math.max(0, modTabs.size() - visibleTabs);
         tabScrollOffset = Math.max(0, Math.min(maxOffset, tabScrollOffset + delta));
-        int centerX = this.width / 2;
-        int rightPaneX = centerX - 30;
-        int contentY = 24 + 30;
         rebuildTabButtons(rightPaneX + 22, contentY);
     }
 
@@ -228,12 +251,14 @@ public class TotemCraftConfigScreen extends Screen {
         }
         tabButtons.clear();
 
-        int maxOffset = Math.max(0, modTabs.size() - VISIBLE_TABS);
+        int maxOffset = Math.max(0, modTabs.size() - visibleTabs);
         if (prevTabBtn != null) prevTabBtn.active = tabScrollOffset > 0;
         if (nextTabBtn != null) nextTabBtn.active = tabScrollOffset < maxOffset;
 
-        int tabWidth = 52;
-        for (int i = 0; i < VISIBLE_TABS; i++) {
+        int availableTabsWidth = searchWidth - 44;
+        int tabWidth = Math.max(38, (availableTabsWidth - (visibleTabs - 1) * 2) / Math.max(1, visibleTabs));
+
+        for (int i = 0; i < visibleTabs; i++) {
             int tabIndex = tabScrollOffset + i;
             if (tabIndex >= modTabs.size()) break;
 
@@ -241,8 +266,9 @@ public class TotemCraftConfigScreen extends Screen {
             boolean isSelected = (tabIndex == selectedTabIdx);
 
             String label = tab.displayName;
-            if (label.length() > 8) {
-                label = label.substring(0, 7) + "…";
+            int maxChars = Math.max(4, tabWidth / 6);
+            if (label.length() > maxChars) {
+                label = label.substring(0, maxChars - 1) + "…";
             }
             Text tabText = isSelected
                     ? Text.literal(label).formatted(Formatting.YELLOW, Formatting.BOLD)
@@ -276,13 +302,13 @@ public class TotemCraftConfigScreen extends Screen {
     }
 
     private void changePage(int delta) {
-        int maxPage = Math.max(0, (filteredItems.size() - 1) / ITEMS_PER_PAGE);
+        int maxPage = Math.max(0, (filteredItems.size() - 1) / Math.max(1, itemsPerPage));
         catalogPage = Math.max(0, Math.min(maxPage, catalogPage + delta));
         updatePaginationButtons();
     }
 
     private void updatePaginationButtons() {
-        int maxPage = Math.max(0, (filteredItems.size() - 1) / ITEMS_PER_PAGE);
+        int maxPage = Math.max(0, (filteredItems.size() - 1) / Math.max(1, itemsPerPage));
         if (prevPageBtn != null) prevPageBtn.active = catalogPage > 0;
         if (nextPageBtn != null) nextPageBtn.active = catalogPage < maxPage;
     }
@@ -344,12 +370,8 @@ public class TotemCraftConfigScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        int centerX = this.width / 2;
-        int rightPaneX = centerX - 30;
-        int contentY = 24 + 30;
-        int catalogGridY = contentY + 42;
-        int catalogWidth = CATALOG_COLS * 24 + 14;
-        int catalogHeight = (CATALOG_ROWS * 24) + 30;
+        int catalogWidth = catalogCols * SLOT_SIZE + 10;
+        int catalogHeight = (catalogRows * SLOT_SIZE) + 30;
 
         // Check if mouse is hovering anywhere over the right catalog pane
         if (mouseX >= rightPaneX && mouseX <= rightPaneX + catalogWidth &&
@@ -370,10 +392,6 @@ public class TotemCraftConfigScreen extends Screen {
         super.render(context, mouseX, mouseY, delta);
 
         int centerX = this.width / 2;
-        int topY = 24;
-        int contentY = topY + 30;
-        int leftPaneX = centerX - 225;
-        int rightPaneX = centerX - 30;
 
         // Title
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, centerX, 8, 0xFFFFFF);
@@ -387,13 +405,12 @@ public class TotemCraftConfigScreen extends Screen {
         // --- DRAW 3x3 CRAFTING GRID ---
         int gridStartX = leftPaneX + 4;
         int gridStartY = contentY + 16;
-        int slotSize = 24;
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 int slotIndex = row * 3 + col;
-                int x = gridStartX + col * slotSize;
-                int y = gridStartY + row * slotSize;
+                int x = gridStartX + col * SLOT_SIZE;
+                int y = gridStartY + row * SLOT_SIZE;
 
                 boolean isSelected = (selectedSlot == slotIndex);
                 drawSlotBox(context, x, y, 22, 22, isSelected);
@@ -414,13 +431,13 @@ public class TotemCraftConfigScreen extends Screen {
         }
 
         // Draw Arrow
-        int arrowX = gridStartX + 3 * slotSize + 10;
-        int arrowY = gridStartY + slotSize + 2;
+        int arrowX = gridStartX + 3 * SLOT_SIZE + 10;
+        int arrowY = gridStartY + SLOT_SIZE + 2;
         context.drawTextWithShadow(this.textRenderer, Text.literal("➡").formatted(Formatting.GOLD, Formatting.BOLD), arrowX, arrowY, 0xFFFFAA00);
 
         // Draw Result Slot
         int resultX = arrowX + 24;
-        int resultY = gridStartY + slotSize - 3;
+        int resultY = gridStartY + SLOT_SIZE - 3;
         boolean isResultSelected = (selectedSlot == RESULT_SLOT);
         drawSlotBox(context, resultX, resultY, 28, 28, isResultSelected);
 
@@ -442,21 +459,17 @@ public class TotemCraftConfigScreen extends Screen {
                 : Text.translatable("totemcraft.gui.selected_slot", selectedSlot + 1);
         context.drawTextWithShadow(this.textRenderer, slotName.copy().formatted(Formatting.GREEN), leftPaneX, contentY + 90, 0xFF55FF55);
 
-        // --- DRAW EXPANDED CATALOG (10x5 = 50 Items) ---
-        int searchY = contentY + 20;
-        int catalogGridY = searchY + 22;
-        int catalogSlotSize = 24;
-
-        int startIndex = catalogPage * ITEMS_PER_PAGE;
-        int endIndex = Math.min(filteredItems.size(), startIndex + ITEMS_PER_PAGE);
+        // --- DRAW DYNAMIC CATALOG GRID ---
+        int startIndex = catalogPage * itemsPerPage;
+        int endIndex = Math.min(filteredItems.size(), startIndex + itemsPerPage);
 
         for (int i = startIndex; i < endIndex; i++) {
             int localIdx = i - startIndex;
-            int cRow = localIdx / CATALOG_COLS;
-            int cCol = localIdx % CATALOG_COLS;
+            int cRow = localIdx / catalogCols;
+            int cCol = localIdx % catalogCols;
 
-            int slotX = rightPaneX + cCol * catalogSlotSize;
-            int slotY = catalogGridY + cRow * catalogSlotSize;
+            int slotX = rightPaneX + cCol * SLOT_SIZE;
+            int slotY = catalogGridY + cRow * SLOT_SIZE;
 
             boolean isHovered = mouseX >= slotX && mouseX <= slotX + 22 && mouseY >= slotY && mouseY <= slotY + 22;
             drawSlotBox(context, slotX, slotY, 22, 22, isHovered);
@@ -471,9 +484,9 @@ public class TotemCraftConfigScreen extends Screen {
         }
 
         // Catalog Page Info
-        int maxPage = Math.max(1, (filteredItems.size() + ITEMS_PER_PAGE - 1) / ITEMS_PER_PAGE);
+        int maxPage = Math.max(1, (filteredItems.size() + itemsPerPage - 1) / Math.max(1, itemsPerPage));
         MutableText pageInfo = Text.translatable("totemcraft.gui.items_total", catalogPage + 1, maxPage, filteredItems.size());
-        context.drawCenteredTextWithShadow(this.textRenderer, pageInfo.formatted(Formatting.GRAY), rightPaneX + 127, catalogGridY + (CATALOG_ROWS * catalogSlotSize) + 10, 0xFFAAAAAA);
+        context.drawCenteredTextWithShadow(this.textRenderer, pageInfo.formatted(Formatting.GRAY), rightPaneX + (searchWidth / 2), catalogGridY + (catalogRows * SLOT_SIZE) + 10, 0xFFAAAAAA);
 
         // Render Tooltip if hovered
         if (!hoveredStack.isEmpty()) {
@@ -495,22 +508,15 @@ public class TotemCraftConfigScreen extends Screen {
             return true;
         }
 
-        int centerX = this.width / 2;
-        int topY = 24;
-        int contentY = topY + 30;
-        int leftPaneX = centerX - 225;
-        int rightPaneX = centerX - 30;
-
         // Check 3x3 crafting grid click
         int gridStartX = leftPaneX + 4;
         int gridStartY = contentY + 16;
-        int slotSize = 24;
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 int slotIndex = row * 3 + col;
-                int x = gridStartX + col * slotSize;
-                int y = gridStartY + row * slotSize;
+                int x = gridStartX + col * SLOT_SIZE;
+                int y = gridStartY + row * SLOT_SIZE;
 
                 if (mouseX >= x && mouseX <= x + 22 && mouseY >= y && mouseY <= y + 22) {
                     if (button == 1) { // Right click clears slot
@@ -524,29 +530,25 @@ public class TotemCraftConfigScreen extends Screen {
         }
 
         // Check result slot click
-        int arrowX = gridStartX + 3 * slotSize + 10;
+        int arrowX = gridStartX + 3 * SLOT_SIZE + 10;
         int resultX = arrowX + 24;
-        int resultY = gridStartY + slotSize - 3;
+        int resultY = gridStartY + SLOT_SIZE - 3;
         if (mouseX >= resultX && mouseX <= resultX + 28 && mouseY >= resultY && mouseY <= resultY + 28) {
             selectedSlot = RESULT_SLOT;
             return true;
         }
 
         // Check catalog grid click
-        int searchY = contentY + 20;
-        int catalogGridY = searchY + 22;
-        int catalogSlotSize = 24;
-
-        int startIndex = catalogPage * ITEMS_PER_PAGE;
-        int endIndex = Math.min(filteredItems.size(), startIndex + ITEMS_PER_PAGE);
+        int startIndex = catalogPage * itemsPerPage;
+        int endIndex = Math.min(filteredItems.size(), startIndex + itemsPerPage);
 
         for (int i = startIndex; i < endIndex; i++) {
             int localIdx = i - startIndex;
-            int cRow = localIdx / CATALOG_COLS;
-            int cCol = localIdx % CATALOG_COLS;
+            int cRow = localIdx / catalogCols;
+            int cCol = localIdx % catalogCols;
 
-            int slotX = rightPaneX + cCol * catalogSlotSize;
-            int slotY = catalogGridY + cRow * catalogSlotSize;
+            int slotX = rightPaneX + cCol * SLOT_SIZE;
+            int slotY = catalogGridY + cRow * SLOT_SIZE;
 
             if (mouseX >= slotX && mouseX <= slotX + 22 && mouseY >= slotY && mouseY <= slotY + 22) {
                 Item chosenItem = filteredItems.get(i);
