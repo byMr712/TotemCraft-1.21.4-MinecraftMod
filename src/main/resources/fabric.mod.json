@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "totemcraft",
+  "version": "${version}",
+  "name": "TotemCraft",
+  "description": "A configurable Fabric mod for Minecraft 1.21.4 that adds a crafting recipe for the Totem of Undying (8 golden apples around a ghast tear by default) with an in-game GUI config screen and ModMenu integration.",
+  "authors": [
+    "Mr712"
+  ],
+  "contact": {
+    "sources": "https://github.com/byMr712/TotemCraft-MinecraftMod"
+  },
+  "license": "Apache-2.0",
+  "icon": "assets/totemcraft/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.totemcraft.TotemCraftMod"
+    ],
+    "modmenu": [
+      "com.totemcraft.integration.ModMenuIntegration"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.4",
+    "java": ">=21"
+  },
+  "suggests": {
+    "fabric-api": "*",
+    "modmenu": "*"
+  }
+}
