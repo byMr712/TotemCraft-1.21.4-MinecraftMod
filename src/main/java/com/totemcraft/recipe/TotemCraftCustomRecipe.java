@@ -7,8 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.IngredientPlacement;
+import net.minecraft.recipe.RawShapedRecipe;
 import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.SpecialCraftingRecipe;
+import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.recipe.book.RecipeBookCategories;
 import net.minecraft.recipe.book.RecipeBookCategory;
@@ -22,11 +23,31 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-public class TotemCraftCustomRecipe extends SpecialCraftingRecipe {
+public class TotemCraftCustomRecipe extends ShapedRecipe {
+
     public TotemCraftCustomRecipe(CraftingRecipeCategory category) {
-        super(category);
+        super("totemcraft", category, createDefaultRaw(), new ItemStack(Items.TOTEM_OF_UNDYING), true);
+    }
+
+    private static RawShapedRecipe createDefaultRaw() {
+        Map<Character, Ingredient> key = Map.of(
+                'A', Ingredient.ofItem(Items.GOLDEN_APPLE),
+                'G', Ingredient.ofItem(Items.GHAST_TEAR)
+        );
+        return RawShapedRecipe.create(key, "AAA", "AGA", "AAA");
+    }
+
+    @Override
+    public int getWidth() {
+        return 3;
+    }
+
+    @Override
+    public int getHeight() {
+        return 3;
     }
 
     @Override
@@ -94,7 +115,7 @@ public class TotemCraftCustomRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public IngredientPlacement getIngredientPlacement() {
+    public List<Optional<Ingredient>> getIngredients() {
         TotemCraftConfig config = TotemCraftConfig.getInstance();
         List<Optional<Ingredient>> list = new ArrayList<>(9);
         for (int i = 0; i < 9; i++) {
@@ -105,7 +126,12 @@ public class TotemCraftCustomRecipe extends SpecialCraftingRecipe {
                 list.add(Optional.of(Ingredient.ofItem(item)));
             }
         }
-        return IngredientPlacement.forMultipleSlots(list);
+        return list;
+    }
+
+    @Override
+    public IngredientPlacement getIngredientPlacement() {
+        return IngredientPlacement.forMultipleSlots(getIngredients());
     }
 
     @Override
@@ -132,7 +158,7 @@ public class TotemCraftCustomRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public RecipeSerializer<? extends SpecialCraftingRecipe> getSerializer() {
+    public RecipeSerializer<? extends ShapedRecipe> getSerializer() {
         return TotemCraftMod.RECIPE_SERIALIZER;
     }
 }
