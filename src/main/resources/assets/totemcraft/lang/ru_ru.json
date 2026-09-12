@@ -15,5 +15,7 @@
   "totemcraft.gui.cancel": "Отмена",
   "totemcraft.gui.selected_slot": "Выбран: Слот #%d",
   "totemcraft.gui.selected_result": "Выбран: Результат крафта",
-  "totemcraft.gui.items_total": "Стр. %d / %d (%d предм.)"
+  "totemcraft.gui.items_total": "Стр. %d / %d (%d предм.)",
+  "advancements.totemcraft.craft_totem.title": "Самодельный тотем",
+  "advancements.totemcraft.craft_totem.description": "Я никогда не умру!"
 }

@@ -15,5 +15,7 @@
   "totemcraft.gui.cancel": "Cancel",
   "totemcraft.gui.selected_slot": "Selected: Slot #%d",
   "totemcraft.gui.selected_result": "Selected: Crafting Output",
-  "totemcraft.gui.items_total": "Page %d / %d (%d items)"
+  "totemcraft.gui.items_total": "Page %d / %d (%d items)",
+  "advancements.totemcraft.craft_totem.title": "Handmade Totem",
+  "advancements.totemcraft.craft_totem.description": "I will never die!"
 }
