@@ -4,15 +4,21 @@ import com.mojang.serialization.MapCodec;
 import com.totemcraft.config.TotemCraftConfig;
 import com.totemcraft.recipe.TotemCraftCustomRecipe;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class TotemCraftMod implements ModInitializer {
     public static final String MOD_ID = "totemcraft";
@@ -40,6 +46,16 @@ public class TotemCraftMod implements ModInitializer {
     @Override
     public void onInitialize() {
         TotemCraftConfig.getInstance();
+
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            try {
+                RegistryKey<Recipe<?>> key = RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(MOD_ID, "totem_of_undying"));
+                handler.getPlayer().unlockRecipes(List.of(key));
+            } catch (Exception e) {
+                LOGGER.error("Failed to unlock TotemCraft recipe for player", e);
+            }
+        });
+
         LOGGER.info("TotemCraft initialized! Dynamic shaped recipe for Totem of Undying is active.");
     }
 }

@@ -40,6 +40,20 @@ public class TotemCraftCustomRecipe extends ShapedRecipe {
         return RawShapedRecipe.create(key, "AAA", "AGA", "AAA");
     }
 
+    public RawShapedRecipe getRawRecipe() {
+        TotemCraftConfig config = TotemCraftConfig.getInstance();
+        List<Optional<Ingredient>> ingredients = new ArrayList<>(9);
+        for (int i = 0; i < 9; i++) {
+            Item item = config.getItemAt(i);
+            if (item == Items.AIR) {
+                ingredients.add(Optional.empty());
+            } else {
+                ingredients.add(Optional.of(Ingredient.ofItem(item)));
+            }
+        }
+        return new RawShapedRecipe(3, 3, ingredients, Optional.empty());
+    }
+
     @Override
     public int getWidth() {
         return 3;
@@ -71,41 +85,7 @@ public class TotemCraftCustomRecipe extends ShapedRecipe {
         if (!config.enabled) {
             return false;
         }
-        if (input.getWidth() < 3 || input.getHeight() < 3) {
-            return false;
-        }
-
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
-                int slotIndex = y * 3 + x;
-                Item requiredItem = config.getItemAt(slotIndex);
-                ItemStack stack = input.getStackInSlot(x, y);
-                if (requiredItem == Items.AIR) {
-                    if (!stack.isEmpty()) {
-                        return false;
-                    }
-                } else {
-                    if (stack.isEmpty() || !stack.isOf(requiredItem)) {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        // Ensure no leftover items outside of the 3x3 region if grid is larger
-        if (input.getWidth() > 3 || input.getHeight() > 3) {
-            for (int y = 0; y < input.getHeight(); y++) {
-                for (int x = 0; x < input.getWidth(); x++) {
-                    if (x >= 3 || y >= 3) {
-                        if (!input.getStackInSlot(x, y).isEmpty()) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-
-        return true;
+        return getRawRecipe().matches(input);
     }
 
     @Override
@@ -116,17 +96,7 @@ public class TotemCraftCustomRecipe extends ShapedRecipe {
 
     @Override
     public List<Optional<Ingredient>> getIngredients() {
-        TotemCraftConfig config = TotemCraftConfig.getInstance();
-        List<Optional<Ingredient>> list = new ArrayList<>(9);
-        for (int i = 0; i < 9; i++) {
-            Item item = config.getItemAt(i);
-            if (item == Items.AIR) {
-                list.add(Optional.empty());
-            } else {
-                list.add(Optional.of(Ingredient.ofItem(item)));
-            }
-        }
-        return list;
+        return getRawRecipe().getIngredients();
     }
 
     @Override
