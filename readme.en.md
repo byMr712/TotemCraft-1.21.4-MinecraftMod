@@ -2,7 +2,7 @@
 
 > **Language:** [Русский](readme.md) · English
 
-A lightweight, configurable Minecraft mod for the **Fabric 1.21.4** mod loader that introduces a balanced crafting recipe for the **Totem of Undying** with an authentic in-game **Mod Menu** GUI configuration screen.
+A lightweight, fully configurable Minecraft mod for the **Fabric 1.21.4** mod loader that introduces a balanced crafting recipe for the **Totem of Undying** with an authentic in-game **Mod Menu** GUI configuration screen.
 
 ![Java 21](https://img.shields.io/badge/Java-21-orange.svg)
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.21.4-brightgreen.svg)
@@ -15,10 +15,14 @@ A lightweight, configurable Minecraft mod for the **Fabric 1.21.4** mod loader t
 
 - **Balanced Default Recipe:** 8 Golden Apples surrounding a Ghast Tear in the center.
 - **In-Game Minecraft GUI Configurator:** Customize the recipe layout directly in-game in authentic vanilla style.
-- **Support for Items from Any Mod:** Built-in item picker catalog with live search and pagination enables assigning any item from any installed mod to any crafting grid slot or the recipe output.
+- **Responsive & Dynamic Catalog Size:** The item picker automatically calculates the optimal columns and rows based on your screen resolution and GUI Scale.
+- **Mod Filtering Tabs (Mod Tabs):** Quickly switch between "All", "Minecraft" (Vanilla), and individual tabs for every detected mod.
+- **Mouse Wheel Scrolling:** Scroll through catalog pages effortlessly using the mouse scroll wheel or navigation buttons.
+- **Support for Items from Any Mod:** Built-in item picker catalog with live search enables assigning any item from any installed mod to any crafting grid slot or recipe output.
 - **Optional Mod Menu Integration:** If [Mod Menu](https://modrinth.com/mod/modmenu) is present, the settings button seamlessly appears in the mod list. If Mod Menu is absent, the mod operates normally without issues.
 - **Live Recipe Updates without Restart:** Recipe adjustments take effect instantly in-game without needing to restart the client, world, or server.
 - **Vanilla Client Friendly:** Server-side installation supports unmodded vanilla clients out of the box.
+- **Full Localization:** Fully localized in Russian (`ru_ru`) and English (`en_us`).
 
 
 ## Default Crafting Recipe
@@ -52,8 +56,9 @@ With [Mod Menu](https://modrinth.com/mod/modmenu) installed, navigate to **Main 
 
 - **Interactive 3x3 Crafting Grid:** Click any slot in the grid to select it (highlighted with a gold border).
 - **Result Slot & Output Count:** Select the result slot to change the produced item and adjust output amount with `+` / `-` buttons (1 to 64).
+- **Mod Tabs:** Switch between "All", "Minecraft", and third-party mod tabs for instant category filtering.
 - **Full-Text Item Search:** Search for items in English, Russian, or by raw ID (e.g. `apple`, `diamond`, `botania:mana_pearl`).
-- **Global Item Catalog:** 8x4 grid with pagination displaying all registered items from Minecraft and third-party mods. Click any item in the catalog to assign it to the active slot.
+- **Responsive Item Catalog:** Automatically adapts slot capacity to your screen size and supports mouse scroll navigation. Click any item in the catalog to assign it to the active slot.
 - **Quick Action Buttons:**
   - `Clear Slot` — clears the active slot (sets to empty / Air).
   - `Fill 8` — fills all 8 outer slots with the item in the active slot.
@@ -74,8 +79,8 @@ Configuration is saved in `config/totemcraft.json`:
     "minecraft:golden_apple",
     "minecraft:golden_apple",
     "minecraft:golden_apple",
-    "minecraft:ghast_tear",
     "minecraft:golden_apple",
+    "minecraft:ghast_tear",
     "minecraft:golden_apple",
     "minecraft:golden_apple",
     "minecraft:golden_apple"
@@ -119,7 +124,7 @@ TotemCraft-MinecraftMod/
 │       │   └── com/totemcraft/
 │       │       ├── TotemCraftMod.java              # Mod entry point & registry
 │       │       ├── client/gui/
-│       │       │   └── TotemCraftConfigScreen.java # Authentic Minecraft GUI screen
+│       │       │   └── TotemCraftConfigScreen.java # Responsive Minecraft GUI screen
 │       │       ├── config/
 │       │       │   └── TotemCraftConfig.java       # JSON configuration manager
 │       │       ├── integration/
