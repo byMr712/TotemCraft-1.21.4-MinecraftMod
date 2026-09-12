@@ -2,13 +2,19 @@
 
 > **Language:** [Русский](readme.md) · English
 
-A lightweight, fully configurable Minecraft mod for the **Fabric 1.21.4** mod loader that introduces a balanced crafting recipe for the **Totem of Undying** with an authentic in-game **Mod Menu** GUI configuration screen.
+A lightweight, fully configurable Minecraft mod for the **Fabric 1.21.4** mod loader that introduces a balanced crafting recipe for the **Totem of Undying** with an authentic in-game **Mod Menu** GUI configuration screen, Recipe Book & Recipe Viewer (JEI, REI, EMI, JEB) auto-fill support, and a dedicated custom advancement.
 
 ![Java 21](https://img.shields.io/badge/Java-21-orange.svg)
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.21.4-brightgreen.svg)
 ![Fabric](https://img.shields.io/badge/Loader-Fabric-blue.svg)
 ![ModMenu](https://img.shields.io/badge/ModMenu-Supported-success.svg)
 ![License](https://img.shields.io/badge/License-Apache_2.0-yellow.svg)
+
+## Screenshots
+- Totem crafting
+- ![Totem crafting](/images/totemcraft.png)
+- Configuration via ModMenu
+- ![Configuration via ModMenu](/images/totemcraft_modmenu.png)
 
 
 ## Features
@@ -19,6 +25,8 @@ A lightweight, fully configurable Minecraft mod for the **Fabric 1.21.4** mod lo
 - **Mod Filtering Tabs (Mod Tabs):** Quickly switch between "All", "Minecraft" (Vanilla), and individual tabs for every detected mod.
 - **Mouse Wheel Scrolling:** Scroll through catalog pages effortlessly using the mouse scroll wheel or navigation buttons.
 - **Support for Items from Any Mod:** Built-in item picker catalog with live search enables assigning any item from any installed mod to any crafting grid slot or recipe output.
+- **Seamless Recipe Book & Recipe Viewer Integration:** The recipe fully appears in the Recipe Book, JEI, REI, EMI, JEB and supports instant recipe ingredient transfer into crafting tables with a single click.
+- **Custom Advancement:** Players unlock the *«Handmade Totem — I will never die!»* advancement upon crafting their first totem.
 - **Optional Mod Menu Integration:** If [Mod Menu](https://modrinth.com/mod/modmenu) is present, the settings button seamlessly appears in the mod list. If Mod Menu is absent, the mod operates normally without issues.
 - **Live Recipe Updates without Restart:** Recipe adjustments take effect instantly in-game without needing to restart the client, world, or server.
 - **Vanilla Client Friendly:** Server-side installation supports unmodded vanilla clients out of the box.
@@ -50,6 +58,15 @@ By default, crafting takes place in a standard 3x3 crafting grid: **8 Golden App
 | **Output** | **Totem of Undying** | `minecraft:totem_of_undying` | 1 |
 
 
+## Advancement
+
+The mod adds a custom advancement to the "Adventure" tab:
+
+| Icon | Title | Description | Requirement |
+|---|---|---|---|
+| 🛡️ | **Handmade Totem** | *I will never die!* | Craft a Totem of Undying using the mod's recipe (manually or via an auto-crafter). |
+
+
 ## In-Game Configuration Screen (GUI)
 
 With [Mod Menu](https://modrinth.com/mod/modmenu) installed, navigate to **Main Menu ➔ Mods ➔ TotemCraft ➔ Settings**:
@@ -79,8 +96,8 @@ Configuration is saved in `config/totemcraft.json`:
     "minecraft:golden_apple",
     "minecraft:golden_apple",
     "minecraft:golden_apple",
-    "minecraft:golden_apple",
     "minecraft:ghast_tear",
+    "minecraft:golden_apple",
     "minecraft:golden_apple",
     "minecraft:golden_apple",
     "minecraft:golden_apple"
@@ -137,8 +154,13 @@ TotemCraft-MinecraftMod/
 │           │   └── lang/
 │           │       ├── en_us.json                  # English localization
 │           │       └── ru_ru.json                  # Russian localization
-│           ├── data/totemcraft/recipe/
-│           │   └── totem_of_undying.json           # Recipe declaration
+│           ├── data/totemcraft/
+│           │   ├── advancement/
+│           │   │   ├── craft_totem.json            # Totem crafting advancement
+│           │   │   └── recipes/
+│           │   │       └── totem_of_undying.json   # Recipe unlocking trigger
+│           │   └── recipe/
+│           │       └── totem_of_undying.json       # Recipe declaration
 │           └── fabric.mod.json                     # Fabric mod metadata
 ├── .gitattributes                 # Git line endings normalization
 ├── .gitignore                     # Git ignored files configuration
