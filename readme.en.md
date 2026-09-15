@@ -16,7 +16,6 @@ A lightweight, fully configurable Minecraft mod for the **Fabric 1.21.4** mod lo
 - Configuration via ModMenu
 - ![Configuration via ModMenu](/images/totemcraft_modmenu.png)
 
-
 ## Features
 
 - **Balanced Default Recipe:** 8 Golden Apples surrounding a Ghast Tear in the center.
@@ -32,7 +31,6 @@ A lightweight, fully configurable Minecraft mod for the **Fabric 1.21.4** mod lo
 - **Vanilla Client Friendly:** Server-side installation supports unmodded vanilla clients out of the box.
 - **Full Localization:** Fully localized in Russian (`ru_ru`) and English (`en_us`).
 
-
 ## Default Crafting Recipe
 
 By default, crafting takes place in a standard 3x3 crafting grid: **8 Golden Apples** placed around **1 Ghast Tear** in the center.
@@ -41,11 +39,11 @@ By default, crafting takes place in a standard 3x3 crafting grid: **8 Golden App
 
 ```
 +---------------------+---------------------+---------------------+
-|    [Golden Apple]   |    [Golden Apple]   |    [Golden Apple]   |
+| [Golden Apple] | [Golden Apple] | [Golden Apple] |
 +---------------------+---------------------+---------------------+
-|    [Golden Apple]   |     [Ghast Tear]    |    [Golden Apple]   |  ===>  [Totem of Undying] (x1)
+| [Golden Apple] | [Ghast Tear] | [Golden Apple] | ===> [Totem of Undying] (x1)
 +---------------------+---------------------+---------------------+
-|    [Golden Apple]   |    [Golden Apple]   |    [Golden Apple]   |
+| [Golden Apple] | [Golden Apple] | [Golden Apple] |
 +---------------------+---------------------+---------------------+
 ```
 
@@ -57,19 +55,17 @@ By default, crafting takes place in a standard 3x3 crafting grid: **8 Golden App
 | 5 (Center) | **Ghast Tear** | `minecraft:ghast_tear` | 1 |
 | **Output** | **Totem of Undying** | `minecraft:totem_of_undying` | 1 |
 
-
 ## Advancement
 
 The mod adds a custom advancement to the "Adventure" tab:
 
 | Icon | Title | Description | Requirement |
 |---|---|---|---|
-| 🛡️ | **Handmade Totem** | *I will never die!* | Craft a Totem of Undying using the mod's recipe (manually or via an auto-crafter). |
-
+| | **Handmade Totem** | *I will never die!* | Craft a Totem of Undying using the mod's recipe (manually or via an auto-crafter). |
 
 ## In-Game Configuration Screen (GUI)
 
-With [Mod Menu](https://modrinth.com/mod/modmenu) installed, navigate to **Main Menu ➔ Mods ➔ TotemCraft ➔ Settings**:
+With [Mod Menu](https://modrinth.com/mod/modmenu) installed, navigate to **Main Menu Mods TotemCraft Settings**:
 
 - **Interactive 3x3 Crafting Grid:** Click any slot in the grid to select it (highlighted with a gold border).
 - **Result Slot & Output Count:** Select the result slot to change the produced item and adjust output amount with `+` / `-` buttons (1 to 64).
@@ -77,12 +73,11 @@ With [Mod Menu](https://modrinth.com/mod/modmenu) installed, navigate to **Main 
 - **Full-Text Item Search:** Search for items in English, Russian, or by raw ID (e.g. `apple`, `diamond`, `botania:mana_pearl`).
 - **Responsive Item Catalog:** Automatically adapts slot capacity to your screen size and supports mouse scroll navigation. Click any item in the catalog to assign it to the active slot.
 - **Quick Action Buttons:**
-  - `Clear Slot` — clears the active slot (sets to empty / Air).
-  - `Fill 8` — fills all 8 outer slots with the item in the active slot.
-  - `Clear All` — empties the entire 3x3 grid.
-  - `Recipe: ENABLED / DISABLED` — toggle recipe on/off in real-time.
-  - `Reset Defaults` — restores 8 golden apples + ghast tear layout.
-
+ - `Clear Slot` — clears the active slot (sets to empty / Air).
+ - `Fill 8` — fills all 8 outer slots with the item in the active slot.
+ - `Clear All` — empties the entire 3x3 grid.
+ - `Recipe: ENABLED / DISABLED` — toggle recipe on/off in real-time.
+ - `Reset Defaults` — restores 8 golden apples + ghast tear layout.
 
 ## Configuration File
 
@@ -90,23 +85,22 @@ Configuration is saved in `config/totemcraft.json`:
 
 ```json
 {
-  "enabled": true,
-  "patternSlots": [
-    "minecraft:golden_apple",
-    "minecraft:golden_apple",
-    "minecraft:golden_apple",
-    "minecraft:golden_apple",
-    "minecraft:ghast_tear",
-    "minecraft:golden_apple",
-    "minecraft:golden_apple",
-    "minecraft:golden_apple",
-    "minecraft:golden_apple"
-  ],
-  "resultItemId": "minecraft:totem_of_undying",
-  "resultCount": 1
+ "enabled": true,
+ "patternSlots": [
+ "minecraft:golden_apple",
+ "minecraft:golden_apple",
+ "minecraft:golden_apple",
+ "minecraft:golden_apple",
+ "minecraft:ghast_tear",
+ "minecraft:golden_apple",
+ "minecraft:golden_apple",
+ "minecraft:golden_apple",
+ "minecraft:golden_apple"
+ ],
+ "resultItemId": "minecraft:totem_of_undying",
+ "resultCount": 1
 }
 ```
-
 
 ## System Requirements
 
@@ -115,7 +109,6 @@ Configuration is saved in `config/totemcraft.json`:
 - **Java:** `Java 21` or newer
 - **Library:** [Fabric API](https://modrinth.com/mod/fabric-api) (recommended)
 - **Optional:** [Mod Menu](https://modrinth.com/mod/modmenu) (for opening the in-game GUI settings)
-
 
 ## Installation
 
@@ -129,68 +122,65 @@ Configuration is saved in `config/totemcraft.json`:
 2. Place `Fabric API` and `TotemCraft-1.0.0.jar` into the `mods/` directory.
 3. Restart the server.
 
-
 ## Project Structure
 
 ```
 TotemCraft-MinecraftMod/
-├── gradle/wrapper/                # Gradle Wrapper binaries and config
+├── gradle/wrapper/ # Gradle Wrapper binaries and config
 ├── src/
-│   └── main/
-│       ├── java/
-│       │   └── com/totemcraft/
-│       │       ├── TotemCraftMod.java              # Mod entry point & registry
-│       │       ├── client/gui/
-│       │       │   └── TotemCraftConfigScreen.java # Responsive Minecraft GUI screen
-│       │       ├── config/
-│       │       │   └── TotemCraftConfig.java       # JSON configuration manager
-│       │       ├── integration/
-│       │       │   └── ModMenuIntegration.java     # Mod Menu API integration
-│       │       └── recipe/
-│       │           └── TotemCraftCustomRecipe.java # Dynamic crafting recipe logic
-│       └── resources/
-│           ├── assets/totemcraft/
-│           │   ├── icon.png                        # Mod icon
-│           │   └── lang/
-│           │       ├── en_us.json                  # English localization
-│           │       └── ru_ru.json                  # Russian localization
-│           ├── data/totemcraft/
-│           │   ├── advancement/
-│           │   │   ├── craft_totem.json            # Totem crafting advancement
-│           │   │   └── recipes/
-│           │   │       └── totem_of_undying.json   # Recipe unlocking trigger
-│           │   └── recipe/
-│           │       └── totem_of_undying.json       # Recipe declaration
-│           └── fabric.mod.json                     # Fabric mod metadata
-├── .gitattributes                 # Git line endings normalization
-├── .gitignore                     # Git ignored files configuration
-├── build.gradle                   # Fabric Loom build configuration
-├── gradle.properties              # Dependencies & version properties
-├── gradlew / gradlew.bat          # Gradle Wrapper executable scripts
-├── LICENSE                        # Apache-2.0 License
-├── readme.md                      # Documentation (Russian)
-├── readme.en.md                   # Documentation (English)
-└── settings.gradle                # Gradle settings
+│ └── main/
+│ ├── java/
+│ │ └── com/totemcraft/
+│ │ ├── TotemCraftMod.java # Mod entry point & registry
+│ │ ├── client/gui/
+│ │ │ └── TotemCraftConfigScreen.java # Responsive Minecraft GUI screen
+│ │ ├── config/
+│ │ │ └── TotemCraftConfig.java # JSON configuration manager
+│ │ ├── integration/
+│ │ │ └── ModMenuIntegration.java # Mod Menu API integration
+│ │ └── recipe/
+│ │ └── TotemCraftCustomRecipe.java # Dynamic crafting recipe logic
+│ └── resources/
+│ ├── assets/totemcraft/
+│ │ ├── icon.png # Mod icon
+│ │ └── lang/
+│ │ ├── en_us.json # English localization
+│ │ └── ru_ru.json # Russian localization
+│ ├── data/totemcraft/
+│ │ ├── advancement/
+│ │ │ ├── craft_totem.json # Totem crafting advancement
+│ │ │ └── recipes/
+│ │ │ └── totem_of_undying.json # Recipe unlocking trigger
+│ │ └── recipe/
+│ │ └── totem_of_undying.json # Recipe declaration
+│ └── fabric.mod.json # Fabric mod metadata
+├── .gitattributes # Git line endings normalization
+├── .gitignore # Git ignored files configuration
+├── build.gradle # Fabric Loom build configuration
+├── gradle.properties # Dependencies & version properties
+├── gradlew / gradlew.bat # Gradle Wrapper executable scripts
+├── LICENSE # Apache-2.0 License
+├── readme.md # Documentation (Russian)
+├── readme.en.md # Documentation (English)
+└── settings.gradle # Gradle settings
 ```
-
 
 ## Building from Source
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/byMr712/TotemCraft-MinecraftMod.git
-   cd TotemCraft-MinecraftMod
-   ```
+ ```bash
+ git clone https://github.com/byMr712/TotemCraft-MinecraftMod.git
+ cd TotemCraft-MinecraftMod
+ ```
 
 2. Run Gradle build:
-   - **Linux / macOS:** `./gradlew clean build`
-   - **Windows:** `.\gradlew.bat clean build`
+ - **Linux / macOS:** `./gradlew clean build`
+ - **Windows:** `.\gradlew.bat clean build`
 
 3. The compiled jar will be at:
-   ```
-   build/libs/TotemCraft-1.0.0.jar
-   ```
-
+ ```
+ build/libs/TotemCraft-1.0.0.jar
+ ```
 
 ## License
 

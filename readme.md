@@ -16,7 +16,6 @@
 - Настройка через ModMenu
 - ![Настройка через ModMenu](/images/totemcraft_modmenu.png)
 
-
 ## Возможности
 
 - **Сбалансированный крафт по умолчанию:** 8 золотых яблок в круг и 1 слеза гаста в центре.
@@ -32,7 +31,6 @@
 - **Поддержка Vanilla-клиентов:** При установке на сервер игрокам без мода не требуется его устанавливать (рецепт синхронизируется через стандартный протокол).
 - **Полная локализация:** Доступен на русском (`ru_ru`) и английском (`en_us`) языках.
 
-
 ## Рецепт по умолчанию
 
 В стандартной конфигурации крафт выполняется в сетке 3x3: **8 золотых яблок** по кругу и **1 слеза гаста** строго в центре.
@@ -41,11 +39,11 @@
 
 ```
 +-------------------+-------------------+-------------------+
-|  [Золотое яблоко] |  [Золотое яблоко] |  [Золотое яблоко] |
+| [Золотое яблоко] | [Золотое яблоко] | [Золотое яблоко] |
 +-------------------+-------------------+-------------------+
-|  [Золотое яблоко] |   [Слеза гаста]   |  [Золотое яблоко] |  ===>  [Тотем бессмертия] (1 шт.)
+| [Золотое яблоко] | [Слеза гаста] | [Золотое яблоко] | ===> [Тотем бессмертия] (1 шт.)
 +-------------------+-------------------+-------------------+
-|  [Золотое яблоко] |  [Золотое яблоко] |  [Золотое яблоко] |
+| [Золотое яблоко] | [Золотое яблоко] | [Золотое яблоко] |
 +-------------------+-------------------+-------------------+
 ```
 
@@ -57,19 +55,17 @@
 | 5 (Центр) | **Слеза гаста** (*Ghast Tear*) | `minecraft:ghast_tear` | 1 шт. |
 | **Результат** | **Тотем бессмертия** (*Totem of Undying*) | `minecraft:totem_of_undying` | 1 шт. |
 
-
 ## Достижение
 
 Мод добавляет специальное достижение в ветку «Приключения» (*Adventure*):
 
 | Достижение | Название | Описание | Условие получения |
 |---|---|---|---|
-| 🛡️ | **Самодельный тотем** | *Я никогда не умру!* | Впервые скрафтить тотем бессмертия по рецепту мода (вручную или через авто-крафтер). |
-
+| | **Самодельный тотем** | *Я никогда не умру!* | Впервые скрафтить тотем бессмертия по рецепту мода (вручную или через авто-крафтер). |
 
 ## Графическое меню настройки (GUI)
 
-При установленном моде [Mod Menu](https://modrinth.com/mod/modmenu) перейдите в **Главное меню ➔ Моды ➔ TotemCraft ➔ Настройки**:
+При установленном моде [Mod Menu](https://modrinth.com/mod/modmenu) перейдите в **Главное меню Моды TotemCraft Настройки**:
 
 - **Интерактивная сетка верстака 3x3:** Кликните на любой слот верстака, чтобы выбрать его для редактирования (активный слот подсветится золотой рамкой).
 - **Слот результата и регулировка количества:** Выберите слот результата, чтобы изменить получаемый предмет и его количество (кнопки `+` / `-` от 1 до 64).
@@ -77,12 +73,11 @@
 - **Полнотекстовый поиск предметов:** Введите в строку поиска название предмета на русском/английском или его ID (например, `apple`, `золотое`, `diamond`, `botania:mana_pearl`).
 - **Динамический каталог предметов:** Автоматически адаптирует количество слотов под размер вашего экрана и поддерживает прокрутку страниц колёсиком мыши. Клик по предмету сразу назначает его в выбранный слот верстака или результат.
 - **Быстрые действия:**
-  - `Очистить слот` — удаляет предмет из выбранного слота (делает его пустым).
-  - `Заполнить 8` — заполняет все 8 внешних слотов предметом из активного слота.
-  - `Очистить все` — очищает всю сетку верстака.
-  - `Рецепт: ВКЛЮЧЕН / ВЫКЛЮЧЕН` — мгновенное включение или отключение рецепта.
-  - `По умолчанию` — сброс к 8 золотым яблокам + слеза гаста.
-
+ - `Очистить слот` — удаляет предмет из выбранного слота (делает его пустым).
+ - `Заполнить 8` — заполняет все 8 внешних слотов предметом из активного слота.
+ - `Очистить все` — очищает всю сетку верстака.
+ - `Рецепт: ВКЛЮЧЕН / ВЫКЛЮЧЕН` — мгновенное включение или отключение рецепта.
+ - `По умолчанию` — сброс к 8 золотым яблокам + слеза гаста.
 
 ## Конфигурационный файл
 
@@ -90,23 +85,22 @@
 
 ```json
 {
-  "enabled": true,
-  "patternSlots": [
-    "minecraft:golden_apple",
-    "minecraft:golden_apple",
-    "minecraft:golden_apple",
-    "minecraft:golden_apple",
-    "minecraft:ghast_tear",
-    "minecraft:golden_apple",
-    "minecraft:golden_apple",
-    "minecraft:golden_apple",
-    "minecraft:golden_apple"
-  ],
-  "resultItemId": "minecraft:totem_of_undying",
-  "resultCount": 1
+ "enabled": true,
+ "patternSlots": [
+ "minecraft:golden_apple",
+ "minecraft:golden_apple",
+ "minecraft:golden_apple",
+ "minecraft:golden_apple",
+ "minecraft:ghast_tear",
+ "minecraft:golden_apple",
+ "minecraft:golden_apple",
+ "minecraft:golden_apple",
+ "minecraft:golden_apple"
+ ],
+ "resultItemId": "minecraft:totem_of_undying",
+ "resultCount": 1
 }
 ```
-
 
 ## Системные требования
 
@@ -115,7 +109,6 @@
 - **Java:** `Java 21` или новее
 - **Библиотека:** [Fabric API](https://modrinth.com/mod/fabric-api) (рекомендуется)
 - **Опционально:** [Mod Menu](https://modrinth.com/mod/modmenu) (для открытия меню настроек в игре)
-
 
 ## Установка
 
@@ -129,68 +122,65 @@
 2. Поместите `Fabric API` и `TotemCraft-1.0.0.jar` в папку `mods/` на сервере.
 3. Перезапустите сервер.
 
-
 ## Структура проекта
 
 ```
 TotemCraft-MinecraftMod/
-├── gradle/wrapper/                # Gradle Wrapper бинарники и конфигурация
+├── gradle/wrapper/ # Gradle Wrapper бинарники и конфигурация
 ├── src/
-│   └── main/
-│       ├── java/
-│       │   └── com/totemcraft/
-│       │       ├── TotemCraftMod.java              # Точка входа мода и регистрация
-│       │       ├── client/gui/
-│       │       │   └── TotemCraftConfigScreen.java # Адаптивный Minecraft GUI экран
-│       │       ├── config/
-│       │       │   └── TotemCraftConfig.java       # Менеджер конфигурации JSON
-│       │       ├── integration/
-│       │       │   └── ModMenuIntegration.java     # Интеграция с Mod Menu API
-│       │       └── recipe/
-│       │           └── TotemCraftCustomRecipe.java # Динамический рецепт верстака
-│       └── resources/
-│           ├── assets/totemcraft/
-│           │   ├── icon.png                        # Иконка мода
-│           │   └── lang/
-│           │       ├── en_us.json                  # Английская локализация
-│           │       └── ru_ru.json                  # Русская локализация
-│           ├── data/totemcraft/
-│           │   ├── advancement/
-│           │   │   ├── craft_totem.json            # Достижение за крафт тотема
-│           │   │   └── recipes/
-│           │   │       └── totem_of_undying.json   # Триггер разблокировки рецепта
-│           │   └── recipe/
-│           │       └── totem_of_undying.json       # Декларация рецепта
-│           └── fabric.mod.json                     # Метаданные мода Fabric
-├── .gitattributes                 # Нормализация окончаний строк Git
-├── .gitignore                     # Исключения Git
-├── build.gradle                   # Конфигурация Fabric Loom
-├── gradle.properties              # Версии зависимостей
-├── gradlew / gradlew.bat          # Исполняемые скрипты Gradle Wrapper
-├── LICENSE                        # Лицензия Apache-2.0
-├── readme.md                      # Документация (Русский)
-├── readme.en.md                   # Documentation (English)
-└── settings.gradle                # Настройки проекта Gradle
+│ └── main/
+│ ├── java/
+│ │ └── com/totemcraft/
+│ │ ├── TotemCraftMod.java # Точка входа мода и регистрация
+│ │ ├── client/gui/
+│ │ │ └── TotemCraftConfigScreen.java # Адаптивный Minecraft GUI экран
+│ │ ├── config/
+│ │ │ └── TotemCraftConfig.java # Менеджер конфигурации JSON
+│ │ ├── integration/
+│ │ │ └── ModMenuIntegration.java # Интеграция с Mod Menu API
+│ │ └── recipe/
+│ │ └── TotemCraftCustomRecipe.java # Динамический рецепт верстака
+│ └── resources/
+│ ├── assets/totemcraft/
+│ │ ├── icon.png # Иконка мода
+│ │ └── lang/
+│ │ ├── en_us.json # Английская локализация
+│ │ └── ru_ru.json # Русская локализация
+│ ├── data/totemcraft/
+│ │ ├── advancement/
+│ │ │ ├── craft_totem.json # Достижение за крафт тотема
+│ │ │ └── recipes/
+│ │ │ └── totem_of_undying.json # Триггер разблокировки рецепта
+│ │ └── recipe/
+│ │ └── totem_of_undying.json # Декларация рецепта
+│ └── fabric.mod.json # Метаданные мода Fabric
+├── .gitattributes # Нормализация окончаний строк Git
+├── .gitignore # Исключения Git
+├── build.gradle # Конфигурация Fabric Loom
+├── gradle.properties # Версии зависимостей
+├── gradlew / gradlew.bat # Исполняемые скрипты Gradle Wrapper
+├── LICENSE # Лицензия Apache-2.0
+├── readme.md # Документация (Русский)
+├── readme.en.md # Documentation (English)
+└── settings.gradle # Настройки проекта Gradle
 ```
-
 
 ## Сборка проекта
 
 1. Склонируйте репозиторий:
-   ```bash
-   git clone https://github.com/byMr712/TotemCraft-MinecraftMod.git
-   cd TotemCraft-MinecraftMod
-   ```
+ ```bash
+ git clone https://github.com/byMr712/TotemCraft-MinecraftMod.git
+ cd TotemCraft-MinecraftMod
+ ```
 
 2. Соберите проект через Gradle:
-   - **Linux / macOS:** `./gradlew clean build`
-   - **Windows:** `.\gradlew.bat clean build`
+ - **Linux / macOS:** `./gradlew clean build`
+ - **Windows:** `.\gradlew.bat clean build`
 
 3. Скомпилированный файл будет сохранен в:
-   ```
-   build/libs/TotemCraft-1.0.0.jar
-   ```
-
+ ```
+ build/libs/TotemCraft-1.0.0.jar
+ ```
 
 ## Лицензия
 
