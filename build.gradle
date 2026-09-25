@@ -56,6 +56,21 @@ jar {
     }
 }
 
+remapJar {
+    archiveFileName = "${project.archives_base_name}.jar"
+}
+
+tasks.register('copyToLauncher', Copy) {
+    dependsOn remapJar
+    from remapJar.archiveFile
+    into file("E:/ATLauncher/instances/FabulouslyOptimizedFPStest1214/mods")
+    doLast {
+        println ">>> Copied ${remapJar.archiveFileName.get()} to ATLauncher instance mods folder!"
+    }
+}
+
+build.finalizedBy(copyToLauncher)
+
 publishing {
     publications {
         create("mavenJava", MavenPublication) {
